@@ -1,11 +1,21 @@
 <?php
 
+/*
+ * This file is part of the BluemesaSensorBundle.
+ * 
+ * Copyright (c) 2016 BlueMesa LabDB Contributors <labdb@bluemesa.eu>
+ * 
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Bluemesa\Bundle\SensorBundle\Entity;
 
 use Bluemesa\Bundle\CoreBundle\Entity\Entity;
 use Doctrine\ORM\Mapping as ORM;
 use JMS\Serializer\Annotation as Serializer;
 use Gedmo\Mapping\Annotation as Gedmo;
+use Symfony\Component\Validator\Constraints as Assert;
 
 
 /**
@@ -26,17 +36,19 @@ class Reading extends Entity
     private $timestamp;
 
     /**
+     * @var Sensor
+     *
      * @ORM\ManyToOne(targetEntity="Sensor", inversedBy="readings")
      * @ORM\JoinColumn(onDelete="CASCADE")
      * @Assert\NotBlank(message = "Sensor must be specified")
-     * @Serializer\Expose
      */
-    protected $stock;
+    protected $sensor;
 
     /**
      * @var float
      *
      * @ORM\Column(type="float", nullable=true)
+     * @Serializer\Expose
      */
     private $temperature;
 
@@ -44,6 +56,7 @@ class Reading extends Entity
      * @var float
      *
      * @ORM\Column(type="float", nullable=true)
+     * @Serializer\Expose
      */
     private $humidity;
 
@@ -54,7 +67,7 @@ class Reading extends Entity
      * @param float $temperature
      * @param float $humidity
      */
-    public function __construct($temperature, $humidity)
+    public function __construct($temperature = null, $humidity = null)
     {
         $this->temperature = $temperature;
         $this->humidity = $humidity;
@@ -74,6 +87,22 @@ class Reading extends Entity
     public function setTimestamp($timestamp)
     {
         $this->timestamp = $timestamp;
+    }
+
+    /**
+     * @return Sensor
+     */
+    public function getSensor()
+    {
+        return $this->sensor;
+    }
+
+    /**
+     * @param Sensor $sensor
+     */
+    public function setSensor(Sensor $sensor = null)
+    {
+        $this->sensor = $sensor;
     }
 
     /**

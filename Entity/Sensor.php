@@ -1,5 +1,14 @@
 <?php
 
+/*
+ * This file is part of the BluemesaSensorBundle.
+ *
+ * Copyright (c) 2016 BlueMesa LabDB Contributors <labdb@bluemesa.eu>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Bluemesa\Bundle\SensorBundle\Entity;
 
 use Bluemesa\Bundle\CoreBundle\Entity\Entity;
@@ -8,6 +17,7 @@ use Bluemesa\Bundle\CoreBundle\Entity\NamedTrait;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use JMS\Serializer\Annotation as Serializer;
+
 
 /**
  * Sensor
@@ -21,6 +31,7 @@ class Sensor extends Entity implements NamedInterface
 
     /**
      * @ORM\OneToMany(targetEntity="Reading", mappedBy="sensor", cascade={"persist", "remove"}, fetch="EXTRA_LAZY")
+     * @Serializer\Expose
      *
      * @var Collection
      */
@@ -44,9 +55,9 @@ class Sensor extends Entity implements NamedInterface
     {
         $readings = $this->getReadings();
         if (! $readings->contains($reading)) {
+            $reading->setSensor($this);
             $readings->add($reading);
         }
-
     }
     
     /**
