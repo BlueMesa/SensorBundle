@@ -1,0 +1,127 @@
+{% extends "BluemesaSiteTemplateBundle::layout.html.twig" %}
+{% use "BluemesaSiteTemplateBundle:Show:modal.html.twig" %}
+{% import "BluemesaSiteTemplateBundle:Macros:show.html.twig" as s %}
+
+{% block header_row %}
+    <div class="col-sm-offset-3 col-sm-9">
+        {% block page_header %}
+            <h1>{% block headline %}Sensors{% endblock headline %}</h1>
+        {% endblock page_header %}
+    </div>
+{% endblock header_row %}
+
+{% block modal_header %}
+    {{ sensor }}
+    {% if sensor.online %}
+        <span class="pull-right">
+                &nbsp;<i class="fa fa-circle icon-success" title="online" aria-hidden="true"></i>
+            </span>
+    {% else %}
+        <span class="pull-right">
+                &nbsp;<i class="fa fa-circle icon-danger" title="offline" aria-hidden="true"></i>
+            </span>
+    {% endif %}
+    {%  if sensor.tooCold %}
+        <span class="pull-right">
+                &nbsp;<i class="fa fa-exclamation-triangle icon-primary" title="too cold" aria-hidden="true"></i>
+            </span>
+    {%  endif %}
+    {%  if sensor.tooHot %}
+        <span class="pull-right">
+                &nbsp;<i class="fa fa-exclamation-triangle icon-danger" title="too hot" aria-hidden="true"></i>
+            </span>
+    {%  endif %}
+    {%  if sensor.tooDry %}
+        <span class="pull-right">
+                &nbsp;<i class="fa fa-times-circle icon-warning" title="too dry" aria-hidden="true"></i>
+            </span>
+    {%  endif %}
+{% endblock modal_header %}
+
+{% block modal_body %}
+    {{ s.row("Last update", sensor.latestReading.timestamp | date("d M Y H:m:s"))  }}
+    {{ s.row("Preset temperature", sensor.presetTemperature ~ "℃") }}
+    {% if sensor.tooCold %}
+        {{ s.row("Current temperature", sensor.latestReading.temperature ~ "℃", null, null, null, null, "text-primary") }}
+    {% elseif sensor.tooHot %}
+        {{ s.row("Current temperature", sensor.latestReading.temperature ~ "℃", null, null, null, null, "text-danger") }}
+    {% else %}
+        {{ s.row("Current temperature", sensor.latestReading.temperature ~ "℃") }}
+    {% endif %}
+    {{ s.row("Preset humidity", sensor.presetHumidity ~ "% rH") }}
+    {% if sensor.tooDry %}
+        {{ s.row("Current humidity", sensor.latestReading.humidity ~ "% rH", null, null, null, null, "text-warning") }}
+    {% else %}
+        {{ s.row("Current humidity", sensor.latestReading.humidity ~ "% rH") }}
+    {% endif %}
+    <hr>
+    {{ render(controller('BluemesaSensorBundle:Sensor:chart',
+        {'sensor': sensor.id, 'start': start, 'end': end} ))
+    }}
+{% endblock modal_body %}
+
+{% block modal_footer %}
+
+{% endblock modal_footer %}
+
+{#
+
+{% block headline %}
+    <p>
+        {{ sensor.name }}
+        {% if sensor.online %}
+            <span class="pull-right">
+                &nbsp;<i class="fa fa-circle icon-success" title="online" aria-hidden="true"></i>
+            </span>
+        {% else %}
+            <span class="pull-right">
+                &nbsp;<i class="fa fa-circle icon-danger" title="offline" aria-hidden="true"></i>
+            </span>
+        {% endif %}
+        {%  if sensor.tooCold %}
+            <span class="pull-right">
+                &nbsp;<i class="fa fa-exclamation-triangle icon-primary" title="too cold" aria-hidden="true"></i>
+            </span>
+        {%  endif %}
+        {%  if sensor.tooHot %}
+            <span class="pull-right">
+                &nbsp;<i class="fa fa-exclamation-triangle icon-danger" title="too hot" aria-hidden="true"></i>
+            </span>
+        {%  endif %}
+        {%  if not sensor.tooDry %}
+            <span class="pull-right">
+                &nbsp;<i class="fa fa-times-circle icon-warning" title="too dry" aria-hidden="true"></i>
+            </span>
+        {%  endif %}
+
+    </p>
+{% endblock headline %}
+
+{% block content %}
+    <h4>Last update: {{ sensor.latestReading.timestamp | date("d M Y H:m:s") }}</h4>
+    <h4>Current temperature: {{ sensor.latestReading.temperature }} ℃</h4>
+    <h4>Current humidity: {{ sensor.latestReading.humidity }} %rH</h4>
+    {{ render(controller('BluemesaSensorBundle:Sensor:chart',
+        {'sensor': sensor.id, 'start': start, 'end': end} ))
+    }}
+{% endblock %}
+
+{% block header_row %}
+    <div class="col-sm-12">
+        {% block page_header %}
+            <div class="page-header">
+                <h1>{{ block('headline') }}</h1>
+            </div>
+        {% endblock page_header %}
+    </div>
+{% endblock header_row %}
+
+{% block main_row %}
+    <div class="col-sm-12">
+        {% block content_row %}
+            {{ block('content') }}
+        {% endblock content_row %}
+    </div>
+{% endblock main_row %}
+
+#}
