@@ -13,6 +13,7 @@
 namespace Bluemesa\Bundle\SensorBundle\Charts;
 
 
+use Bluemesa\Bundle\CoreBundle\Entity\DatePeriod;
 use Bluemesa\Bundle\SensorBundle\Entity\Sensor;
 use Ob\HighchartsBundle\Highcharts\Highchart;
 
@@ -21,14 +22,13 @@ class SensorChart extends Highchart
     /**
      * SensorChart constructor.
      * @param Sensor $sensor
-     * @param \DateTime $start
-     * @param \DateTime $end
+     * @param  DatePeriod  $period
      */
-    public function __construct(Sensor $sensor, \DateTime $start, \DateTime $end)
+    public function __construct(Sensor $sensor, DatePeriod $period)
     {
         parent::__construct();
 
-        $dataset = $sensor->getDataset($start, $end);
+        $dataset = $sensor->getDataset($period->getStart(), $period->getEnd());
 
         $this->chart->renderTo('chart');
         $this->chart->type('spline');
@@ -47,7 +47,10 @@ class SensorChart extends Highchart
         ));
 
         $this->title->text('Temperature and humidity readings');
-        $this->subtitle->text($sensor->getName());
+        $this->subtitle->text(
+            $sensor->getName() . " from " .
+            $period->getStart()->format("d M Y H:m:s") . " until " .
+            $period->getEnd()->format("d M Y H:m:s"));
         $this->xAxis->type('datetime');
         $this->yAxis(array(
             array(

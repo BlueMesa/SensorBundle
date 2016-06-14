@@ -12,12 +12,12 @@
 namespace Bluemesa\Bundle\SensorBundle\Controller;
 
 use Bluemesa\Bundle\CoreBundle\Controller\RestController;
+use Bluemesa\Bundle\CoreBundle\Entity\DatePeriod;
 use Bluemesa\Bundle\SensorBundle\Charts\SensorChart;
 use Bluemesa\Bundle\SensorBundle\Entity\Reading;
 use Bluemesa\Bundle\SensorBundle\Entity\Sensor;
 use FOS\RestBundle\Controller\Annotations as REST;
 use FOS\RestBundle\View\View;
-use Ob\HighchartsBundle\Highcharts\Highchart;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -59,47 +59,40 @@ class SensorController extends RestController
     /**
      * @REST\View()
      * @REST\Get("/{sensor}.{_format}",
-     *     defaults={"_format" = "json", "start" = "%date_now%", "end" = "%date_24_hours_ago%"},
-     *     requirements={"sensor" = "\d+"})
+     *     defaults={"_format" = "json", "period" = "24"}, requirements={"sensor" = "\d+"})
      * @REST\Get("/{sensor}/from/{start}/until/{end}.{_format}",
-     *     defaults={"_format" = "json", "start" = "%date_now%", "end" = "%date_24_hours_ago%"},
-     *     requirements={"sensor" = "\d+"})
+     *     defaults={"_format" = "json"}, requirements={"sensor" = "\d+"})
      * @REST\Get("/{sensor}/from/{start}.{_format}",
-     *     defaults={"_format" = "json", "start" = "%date_now%", "end" = "%date_24_hours_ago%"},
-     *     requirements={"sensor" = "\d+"})
+     *     defaults={"_format" = "json"}, requirements={"sensor" = "\d+"})
      *
      * @ParamConverter("sensor", class="BluemesaSensorBundle:Sensor", options={"id" = "sensor"})
-     * @ParamConverter("start")
-     * @ParamConverter("end")
+     * @ParamConverter("period")
      *
-     * @param  Request    $request
-     * @param  Sensor     $sensor
-     * @param  \DateTime  $start
-     * @param  \DateTime  $end
+     * @param  Request     $request
+     * @param  Sensor      $sensor
+     * @param  DatePeriod  $period
      * @return View
      */
-    public function getAction(Request $request, Sensor $sensor, \DateTime $start, \DateTime $end)
+    public function getAction(Request $request, Sensor $sensor, DatePeriod $period)
     {
-        return $this->view(array('sensor' => $sensor, 'start' => $start, 'end' => $end));
+        return $this->view(array('sensor' => $sensor, 'period' => $period));
     }
 
     /**
      * @ParamConverter("sensor", class="BluemesaSensorBundle:Sensor", options={"id" = "sensor"})
-     * @ParamConverter("start")
-     * @ParamConverter("end")
+     * @ParamConverter("period")
      *
-     * @param  Request $request
-     * @param  Sensor     $sensor
-     * @param  \DateTime  $start
-     * @param  \DateTime  $end
+     * @param  Request     $request
+     * @param  Sensor      $sensor
+     * @param  DatePeriod  $period
      * @return Response
      */
-    public function chartAction(Request $request, Sensor $sensor, \DateTime $start, \DateTime $end)
+    public function chartAction(Request $request, Sensor $sensor, DatePeriod $period)
     {
-        $chart = new SensorChart($sensor, $start, $end);
+        $chart = new SensorChart($sensor, $period);
 
         return $this->render('BluemesaSensorBundle:Sensor:chart.html.twig', array(
-            'chart' => $chart, 'start' => $start, 'end' => $end
+            'chart' => $chart, 'period' => $period
         ));
     }
 }

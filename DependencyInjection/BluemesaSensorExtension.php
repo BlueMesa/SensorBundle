@@ -21,14 +21,5 @@ class BluemesaSensorExtension extends Extension
     {
         $configuration = new Configuration();
         $config = $this->processConfiguration($configuration, $configs);
-
-        $now = new \DateTime();
-        $container->setParameter(
-            'date_now', $now->format('Y-m-d H:i:s')
-        );
-        $container->setParameter(
-            'date_24_hours_ago', $now->sub(new \DateInterval("PT24H"))->format('Y-m-d H:i:s')
-        );
-
     }
 }
