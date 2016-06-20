@@ -54,12 +54,50 @@
     {% else %}
         {{ s.row("Current humidity", sensor.latestReading.humidity ~ "% rH") }}
     {% endif %}
-    <hr>
-    {{ render(controller('BluemesaSensorBundle:Sensor:chart',
-        {'sensor': sensor.id, 'start': period.start | date("d M Y H:m:s"), 'end': period.end | date("d M Y H:m:s")} ))
-    }}
+    <div class="sensor-chart">
+        <div class="dropdown">
+            <a class= "btn btn-default btn-sm" id="dLabel" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <i class="fa fa-bars" aria-hidden="true"></i>
+            </a>
+            <ul class="dropdown-menu" aria-labelledby="dLabel">
+                <li class="dropdown-form-header">Select chart period</li>
+                <li role="separator" class="divider"></li>
+                {% form_theme form _self %}
+                {% block _sensor_chart_submit_widget %}
+                    {% set attr = {'class': 'btn btn-primary btn-block'} %}
+                    {{ block('submit_widget') }}
+                {% endblock %}
+                {{ form_start(form) }}
+                {{ form_widget(form) }}
+                {{ form_end(form) }}
+            </ul>
+        </div>
+        <div id="chart"></div>
+    </div>
 {% endblock modal_body %}
 
 {% block modal_footer %}
 
 {% endblock modal_footer %}
+
+{% block foot_script %}
+    {{ parent() }}
+    <script src="//code.highcharts.com/4.1.8/highcharts.js"></script>
+    <script type="text/javascript">
+        {{ chart(chart) }}
+    </script>
+    <script type="text/javascript">
+        function toggleDateFields(element) {
+            if (element.val()) {
+                $('#sensor_chart_start').parents('.form-group').hide();
+                $('#sensor_chart_end').parents('.form-group').hide();
+            } else {
+                $('#sensor_chart_start').parents('.form-group').show();
+                $('#sensor_chart_end').parents('.form-group').show();
+            }
+        }
+        $('#sensor_chart_period').change(function() {toggleDateFields($(this))});
+        toggleDateFields($('#sensor_chart_period'));
+
+    </script>
+{% endblock %}

@@ -67,5 +67,6 @@ class SensorChart extends Highchart
                 'opposite' => true
             )
         ));
+        $this->exporting->enabled(false);
     }
 }

@@ -16,9 +16,11 @@ use Bluemesa\Bundle\CoreBundle\Entity\DatePeriod;
 use Bluemesa\Bundle\SensorBundle\Charts\SensorChart;
 use Bluemesa\Bundle\SensorBundle\Entity\Reading;
 use Bluemesa\Bundle\SensorBundle\Entity\Sensor;
+use Bluemesa\Bundle\SensorBundle\Form\SensorChartType;
 use FOS\RestBundle\Controller\Annotations as REST;
 use FOS\RestBundle\View\View;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
+use Symfony\Component\Form\Form;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -60,6 +62,8 @@ class SensorController extends RestController
      * @REST\View()
      * @REST\Get("/{sensor}.{_format}",
      *     defaults={"_format" = "json", "period" = "24"}, requirements={"sensor" = "\d+"})
+     * @REST\Post("/{sensor}.{_format}",
+     *     defaults={"_format" = "json", "period" = "24"}, requirements={"sensor" = "\d+"})
      * @REST\Get("/{sensor}/from/{start}/until/{end}.{_format}",
      *     defaults={"_format" = "json"}, requirements={"sensor" = "\d+"})
      * @REST\Get("/{sensor}/from/{start}.{_format}",
@@ -75,24 +79,20 @@ class SensorController extends RestController
      */
     public function getAction(Request $request, Sensor $sensor, DatePeriod $period)
     {
-        return $this->view(array('sensor' => $sensor, 'period' => $period));
-    }
-
-    /**
-     * @ParamConverter("sensor", class="BluemesaSensorBundle:Sensor", options={"id" = "sensor"})
-     * @ParamConverter("period")
-     *
-     * @param  Request     $request
-     * @param  Sensor      $sensor
-     * @param  DatePeriod  $period
-     * @return Response
-     */
-    public function chartAction(Request $request, Sensor $sensor, DatePeriod $period)
-    {
-        $chart = new SensorChart($sensor, $period);
-
-        return $this->render('BluemesaSensorBundle:Sensor:chart.html.twig', array(
-            'chart' => $chart, 'period' => $period
+        $form = $this->createForm(SensorChartType::class, $period, array(
+            'action' => $this->generateUrl('bluemesa_sensor_sensor_get', array(
+                'sensor' => $sensor->getId(),
+                '_format' => $request->get('_format')))
         ));
+        $form->handleRequest($request);
+        $chart = new SensorChart($sensor, $period);
+        $view = $this->view()
+            ->setData(array('sensor' => $sensor))
+            ->setTemplateData(array(
+                'period' => $period,
+                'form' => $form->createView(),
+                'chart' => $chart));
+
+        return $view;
     }
 }
