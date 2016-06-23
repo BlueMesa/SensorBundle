@@ -24,6 +24,8 @@ use JMS\Serializer\Annotation as Serializer;
  * Sensor
  *
  * @ORM\Entity(repositoryClass="Bluemesa\Bundle\SensorBundle\Repository\SensorRepository")
+ * @ORM\InheritanceType("SINGLE_TABLE")
+ * @ORM\DiscriminatorColumn(name="type", type="string")
  * @Serializer\ExclusionPolicy("all")
  */
 class Sensor extends Entity implements NamedInterface
@@ -62,6 +64,13 @@ class Sensor extends Entity implements NamedInterface
      */
     protected $readings;
 
+
+    public function __construct($temperature = 25.0, $humidity = 50.0, $updateRate = 600)
+    {
+        $this->presetTemperature = $temperature;
+        $this->presetHumidity = $humidity;
+        $this->updateRate = $updateRate;
+    }
 
     /**
      * @param \DateTime|null $start
