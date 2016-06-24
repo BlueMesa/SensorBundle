@@ -94,8 +94,8 @@ class ReadingDataset
         $this->readings = $this->retrieveReadings($start, $end);
 
         if ($count === null) {
-            $count = $this->readings->count() > 1024 ? 1024 : $this->readings->count();
-            $count = $count <= 0 ? 1 : $count;
+            $count = $this->readings->count() > 1152 ? 1152 : $this->readings->count();
+            $count = $count <= 288 ? 288 : $count;
         }
         $i = $this->getInterval($start, $end, $count);
         $value = array();
@@ -114,7 +114,7 @@ class ReadingDataset
         $kP = null;
         $vP = null;
 
-        for ($t = $t0; $t < $tN; $t += $i) {
+        for ($t = $t0; $t <= $tN; $t += $i) {
             if (! $it->valid()) {
                 $this->temperatures[] = null;
                 $this->humidities[] = null;

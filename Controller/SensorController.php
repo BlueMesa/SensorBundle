@@ -20,9 +20,7 @@ use Bluemesa\Bundle\SensorBundle\Form\SensorChartType;
 use FOS\RestBundle\Controller\Annotations as REST;
 use FOS\RestBundle\View\View;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
-use Symfony\Component\Form\Form;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
 
 /**
  * Class SensorController
@@ -35,7 +33,7 @@ class SensorController extends RestController
 
     /**
      * @REST\View()
-     * @REST\Post("/{sensor}/reading.{_format}", defaults={"_format" = "json"}, requirements={"sensor" = "\d+"})
+     * @REST\Post("/{sensor}/reading.{_format}", defaults={"_format" = "html"}, requirements={"sensor" = "\d+"})
      * @ParamConverter("sensor", class="BluemesaSensorBundle:Sensor", options={"id" = "sensor"})
      * @ParamConverter("reading", converter="fos_rest.request_body")
      *
@@ -61,13 +59,13 @@ class SensorController extends RestController
     /**
      * @REST\View()
      * @REST\Get("/{sensor}.{_format}",
-     *     defaults={"_format" = "json", "period" = "24"}, requirements={"sensor" = "\d+"})
+     *     defaults={"_format" = "html", "period" = "24"}, requirements={"sensor" = "\d+"})
      * @REST\Post("/{sensor}.{_format}",
-     *     defaults={"_format" = "json", "period" = "24"}, requirements={"sensor" = "\d+"})
+     *     defaults={"_format" = "html", "period" = "24"}, requirements={"sensor" = "\d+"})
      * @REST\Get("/{sensor}/from/{start}/until/{end}.{_format}",
-     *     defaults={"_format" = "json"}, requirements={"sensor" = "\d+"})
+     *     defaults={"_format" = "html"}, requirements={"sensor" = "\d+"})
      * @REST\Get("/{sensor}/from/{start}.{_format}",
-     *     defaults={"_format" = "json"}, requirements={"sensor" = "\d+"})
+     *     defaults={"_format" = "html"}, requirements={"sensor" = "\d+"})
      *
      * @ParamConverter("sensor", class="BluemesaSensorBundle:Sensor", options={"id" = "sensor"})
      * @ParamConverter("period")

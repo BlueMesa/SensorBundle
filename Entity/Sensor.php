@@ -14,6 +14,7 @@ namespace Bluemesa\Bundle\SensorBundle\Entity;
 use Bluemesa\Bundle\CoreBundle\Entity\Entity;
 use Bluemesa\Bundle\CoreBundle\Entity\NamedInterface;
 use Bluemesa\Bundle\CoreBundle\Entity\NamedTrait;
+use Bluemesa\Bundle\FliesBundle\Command\PrintCommand;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\Common\Collections\Criteria;
 use Doctrine\ORM\Mapping as ORM;
@@ -201,7 +202,7 @@ class Sensor extends Entity implements NamedInterface
         $latest = $this->getLatestReading();
         $now = new \DateTime();
 
-        return ($now->getTimestamp() - $latest->getTimestamp()->getTimestamp()) / 60 < 10;
+        return (null !== $latest)&&(($now->getTimestamp() - $latest->getTimestamp()->getTimestamp()) / 60 < 10);
 
     }
 
@@ -209,20 +210,20 @@ class Sensor extends Entity implements NamedInterface
     {
         $latest = $this->getLatestReading();
 
-        return $latest->getTemperature() > ($this->presetTemperature + 2);
+        return (! null === $latest)||(null !== $latest)&&($latest->getTemperature() > ($this->presetTemperature + 2));
     }
 
     public function isTooCold()
     {
         $latest = $this->getLatestReading();
 
-        return $latest->getTemperature() < ($this->presetTemperature - 2);
+        return (! null === $latest)||(null !== $latest)&&($latest->getTemperature() < ($this->presetTemperature - 2));
     }
 
     public function isTooDry()
     {
         $latest = $this->getLatestReading();
 
-        return $latest->getHumidity() < ($this->presetHumidity - 10);
+        return (! null === $latest)||(null !== $latest)&&($latest->getHumidity() < ($this->presetHumidity - 10));
     }
 }
