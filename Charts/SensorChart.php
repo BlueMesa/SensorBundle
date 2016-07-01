@@ -49,8 +49,8 @@ class SensorChart extends Highchart
         $this->title->text('Temperature and humidity readings');
         $this->subtitle->text(
             $sensor->getName() . " from " .
-            $period->getStart()->format("d M Y H:m:s") . " until " .
-            $period->getEnd()->format("d M Y H:m:s"));
+            $period->getStart()->format("d M Y H:i:s") . " until " .
+            $period->getEnd()->format("d M Y H:i:s"));
         $this->xAxis->type('datetime');
         $this->yAxis(array(
             array(
