@@ -75,10 +75,10 @@ class SensorController extends RestController
      * @param  DatePeriod  $period
      * @return View
      */
-    public function getAction(Request $request, Sensor $sensor, DatePeriod $period)
+    public function getSensorAction(Request $request, Sensor $sensor, DatePeriod $period)
     {
         $form = $this->createForm(SensorChartType::class, $period, array(
-            'action' => $this->generateUrl('bluemesa_sensor_sensor_get', array(
+            'action' => $this->generateUrl('bluemesa_sensor_sensor_getsensor', array(
                 'sensor' => $sensor->getId(),
                 '_format' => $request->get('_format')))
         ));
