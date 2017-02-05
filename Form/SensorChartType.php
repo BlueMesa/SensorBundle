@@ -31,6 +31,7 @@ class SensorChartType extends AbstractType
                         'last month' => DatePeriod::LastMonth,
                     ),
                     'placeholder' => 'custom (use dates)',
+                    'required' => false
                 )
             )
             ->add('submit', SubmitType::class, array('label' => 'Display selected period'))
